@@ -17,4 +17,5 @@ Route::get('/', function () {
 
 Route::post('user/daftar', 'UserController@daftar');
 Route::post('user/lokasi', 'UserController@lokasi');
+Route::post('user/token', 'UserController@token');
 Route::get('user/get/{pin}', 'UserController@getPos');

@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('imei')->unique();
             $table->string('pin')->unique();
+            $table->string('token')->default("");
             $table->string('latitude')->default("");
             $table->string('longitude')->default("");
             $table->timestamps();

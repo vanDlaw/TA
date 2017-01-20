@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'no', 'mac', 'pin',
+        'imei', 'mac', 'pin', 'token'
     ];
 
     /**
@@ -56,5 +56,11 @@ class User extends Authenticatable
     $item->save();
 
     return $item;
+  }
+
+  public static function setToken($pin, $token){
+    $item = User::where('pin',$pin)->first();
+    $item->token =$token;
+    $item->save();
   }
 }

@@ -25,7 +25,7 @@ class UserController extends Controller
       $output['status']="500";
       $output['message']="error";
 
-      $imei=$req->input("no");
+      $imei=$req->input("imei");
       $pin=$this->gen_uid(6);
 
       $item=User::adduser($imei,$pin);
@@ -35,9 +35,10 @@ class UserController extends Controller
         $output['message']="success";
         $output['data']=$item->pin;
       }else{
-
+		$output['status']="400";
+        $output['message']="Error";
+        $output['data']=$imei;
       }
-
       return response()->json($output);
     }
 
@@ -50,8 +51,6 @@ class UserController extends Controller
       $longitude=$req->input("longitude");
       $pin=$req->input("pin");
 
-
-
       $item =User::savelocation($pin,$latitude,$longitude);
 
       $output['status'] = "200";
@@ -59,6 +58,22 @@ class UserController extends Controller
 
       return response()->json($output);
     }
+
+    public function token(Request $req){
+      $output['task']="Set Token";
+      $output['status']="500";
+      $output['message']="error";
+
+      $token = $req->input("token");
+      $pin = $req->input("pin");
+
+      $item = User::setToken($pin, $token);
+
+      $output["status"] = "200";
+      $output["message"] = $item;
+      return response()->json($output);
+    }
+    
     public function getPos(Request $req, $pin){
       $output['task']="Get Location";
       $output['status']="500";
