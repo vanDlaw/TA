@@ -60,7 +60,15 @@ class User extends Authenticatable
 
   public static function setToken($pin, $token){
     $item = User::where('pin',$pin)->first();
-    $item->token =$token;
+    $item->token = $token;
     $item->save();
+  }
+
+  public static function getToken($pin){
+    $item = User::where('pin',$pin)->first();
+    if($item == null){
+      return null;
+    }
+    return $item->token;
   }
 }

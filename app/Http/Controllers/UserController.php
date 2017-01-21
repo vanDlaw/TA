@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
@@ -73,12 +74,12 @@ class UserController extends Controller
       $output["message"] = $item;
       return response()->json($output);
     }
-    
+
     public function getPos(Request $req, $pin){
       $output['task']="Get Location";
       $output['status']="500";
       $output['message']="error";
-      $item =User::getlocation($pin);
+      $item = User::getlocation($pin);
       if ($item == null){
         $output['status']="400";
       }else{
@@ -87,12 +88,41 @@ class UserController extends Controller
         $output['data']['pin']=$pin;
         $output['data']['latitude']=$item->latitude;
         $output['data']['longitude']=$item->longitude;
+        $output['data']['fcm-stat'] = $this->fcm($item->token);
       }
       return response()->json($output);
     }
 
 
-    public function gen_uid($l=10){
+  public function gen_uid($l=10){
     return substr(str_shuffle("123456789ABCDEFGHIJKLMNPQRSTUVWXYZ"), 0, $l);
-    }
+  }
+
+  public function fcm($token){
+    $fcmEndPoint= 'https://fcm.googleapis.com/fcm/send';
+    $serverKey = "key=AIzaSyC2XZo9MezWXxo5ycK7RcAA1ykluqX10ls";
+
+    $client = new Client([
+      'base_uri' => $fcmEndPoint
+    ]);
+
+    $response = $client->request('POST', $fcmEndPoint, [
+      'headers' => [
+        'Authorization' => $serverKey
+      ],
+      'json' => [
+        'to' => $token,
+        'options' => [
+          'priority'  => 'high'
+        ],
+        'notification' => [
+          'title' => 'Aplikasi Pelacak',
+          'body'  => 'Lokasi Anda sedang dilacak',
+          'sound' => 'default'
+        ]
+      ]
+    ]);
+    $statusCode = $response->getStatusCode();
+    return $statusCode;
+  }
 }

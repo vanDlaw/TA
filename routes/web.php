@@ -14,6 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/fcm', 'UserController@fcm');
 
 Route::post('user/daftar', 'UserController@daftar');
 Route::post('user/lokasi', 'UserController@lokasi');
